@@ -16,3 +16,10 @@ JOIN production.orders AS orders ON recency.user_id = orders.user_id
 WHERE
     orders.status = 4
 ON CONFLICT DO NOTHING;
+
+-- Добавлю так же код для задания, которое пропустил
+
+SELECT user_id, recency, frequency, monetary_value
+FROM analysis.dm_rfm_segments
+ORDER BY user_id
+LIMIT 10;
