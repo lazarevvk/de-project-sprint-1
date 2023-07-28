@@ -1,23 +1,17 @@
-CREATE OR REPLACE VIEW recency AS
-SELECT 
-    user_id,
-    NTILE(5) OVER (ORDER BY MAX(order_ts) DESC) AS recency_factor
-FROM orders
-GROUP BY user_id
-ORDER BY recency_factor DESC;
+-- Если тебе не трудно, было бы круто, если бы ты оставил свою телегу или написал в мою для коммуникации,
+-- не совсем понял некоторые комментарии, но постараюсь исправить в любом случае
+-- Моя телега - @lazarevvk
 
-CREATE OR REPLACE VIEW frequency AS
-SELECT 
-    user_id,
-    NTILE(5) OVER (ORDER BY COUNT(*) DESC) AS frequency_factor
-FROM orders
-GROUP BY user_id
-ORDER BY frequency_factor DESC;
+-- Тут, как я понял, я накосячил и неправильно назвал таблицы, проделав лищние телодвижения с кодом и неправильно понял задание
+--Походу в этом задании имелся в виду этот код для создания самой витрины:
 
-CREATE OR REPLACE VIEW monetary_value AS
-SELECT 
-    user_id,
-    NTILE(5) OVER (ORDER BY SUM(payment) DESC) AS monetary_value_factor
-FROM orders
-GROUP BY user_id
-ORDER BY monetary_value_factor DESC;
+-- Создаем витрину dm_rfm_segments
+
+CREATE TABLE analysis.dm_rfm_segments (
+    user_id INT NOT NULL PRIMARY KEY,
+    recency INT NOT NULL CHECK (recency >= 1 AND recency <= 5),
+    frequency INT NOT NULL CHECK (frequency >= 1 AND frequency <= 5),
+    monetary_value INT NOT NULL CHECK (monetary_value >= 1 AND monetary_value <= 5)
+);
+
+-- Так же убрал order status, я его удаляю в коде впоследствии, но его действительно лучше просто не добавлять

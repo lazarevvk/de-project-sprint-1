@@ -1,8 +1,10 @@
-CREATE TABLE analysis.tmp_rfm_recency (
-    user_id INT NOT NULL PRIMARY KEY,
-    recency INT NOT NULL CHECK (recency >= 1 AND recency <= 5)
-);
+-- Исправил три соответствующих запроса, раньше этот код валялся в datamart_ddl.sql 
+-- и таблицы были названы неправильно, теперь всё должно быть верно
 
-INSERT INTO analysis.tmp_rfm_recency (user_id, recency)
-SELECT user_id, recency_factor
-FROM recency;
+CREATE TABLE analysis.tmp_rfm_recency AS
+SELECT 
+    user_id,
+    NTILE(5) OVER (ORDER BY MAX(order_ts) DESC) AS recency
+FROM orders
+GROUP BY user_id
+ORDER BY recency DESC;
